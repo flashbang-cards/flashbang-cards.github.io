@@ -384,9 +384,29 @@
             font-weight: bold;
             text-transform: lowercase;
             transition: background 0.3s ease;
+            text-align: center;
         }
 
         .tutorial-link:hover {
+            background: #7d2048;
+        }
+
+        .support-link {
+            position: absolute;
+            top: 65px;
+            right: 20px;
+            background: #6b1a3d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: lowercase;
+            transition: background 0.3s ease;
+            text-align: center;
+        }
+
+        .support-link:hover {
             background: #7d2048;
         }
 
@@ -514,6 +534,12 @@
         width: auto;
     }
 
+    .support-link {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        width: auto;
+    }
+
     .card-counter {
         font-size: 0.85rem;
     }
@@ -541,6 +567,7 @@
         <button class="toggle-create" onclick="toggleCreateMode()">create cards</button>
         <button class="reset-cards" onclick="resetCards()">reset cards</button>
         <a href="https://imgur.com/a/2vAQyrg" target="_blank" class="tutorial-link">tutorial</a>
+        <a href="https://forms.gle/BYTmwzYx93RwByWc9" target="_blank" class="support-link">support?</a>
         
         <div class="header">
             <div class="title">flashcards</div>
