@@ -343,10 +343,61 @@
             cursor: pointer;
             font-weight: bold;
             text-transform: lowercase;
+            width: 120px;
+            text-align: center;
         }
 
         .toggle-create:hover {
             background: #7d2048;
+        }
+
+        .reset-cards {
+            position: absolute;
+            top: 65px;
+            left: 20px;
+            background: #6b1a3d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: lowercase;
+            font-size: 1rem;
+            width: 120px;
+            text-align: center;
+        }
+
+        .reset-cards:hover {
+            background: #7d2048;
+        }
+
+        .tutorial-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #6b1a3d;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-transform: lowercase;
+            transition: background 0.3s ease;
+        }
+
+        .tutorial-link:hover {
+            background: #7d2048;
+        }
+
+        .credit {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #666;
+            font-size: 0.7rem;
+            font-weight: normal;
+            text-transform: lowercase;
         }
 
         @media (max-width: 768px) {
@@ -408,6 +459,8 @@
 <body>
     <div class="main-container">
         <button class="toggle-create" onclick="toggleCreateMode()">create cards</button>
+        <button class="reset-cards" onclick="resetCards()">reset cards</button>
+        <a href="https://imgur.com/a/2vAQyrg" target="_blank" class="tutorial-link">tutorial</a>
         
         <div class="header">
             <div class="title">flashcards</div>
@@ -449,6 +502,8 @@
                 <div class="card-counter" id="card-counter">flashcard<br>/#</div>
             </div>
         </div>
+        
+        <div class="credit">made by aryaan zain</div>
     </div>
 
     <!-- Create Mode Panel -->
@@ -619,6 +674,17 @@
             }
             currentCardIndex = 0;
             updateStudyMode();
+        }
+
+        function resetCards() {
+            if (flashcards.length === 0) return;
+            
+            if (confirm('Are you sure you want to delete all cards?')) {
+                flashcards = [];
+                currentCardIndex = 0;
+                updateStudyMode();
+                updateCardList();
+            }
         }
 
         function handleFileUpload(event) {
