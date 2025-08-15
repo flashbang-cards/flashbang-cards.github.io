@@ -1,2 +1,2 @@
 flashbang-cards.github.io
-cool flashcards app
+cool flashcards website
