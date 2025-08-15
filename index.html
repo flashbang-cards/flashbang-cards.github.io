@@ -454,7 +454,87 @@
         .card-list::-webkit-scrollbar-thumb:hover {
             background: #777;
         }
-    </style>
+    
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .main-container {
+        border-radius: 8px;
+        min-height: auto;
+    }
+
+    .title {
+        font-size: 2rem;
+        padding: 8px 16px;
+        letter-spacing: 1px;
+    }
+
+    .content {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .left-panel, .right-panel {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .left-panel {
+        border-right: none;
+        border-bottom: 2px dashed #444;
+    }
+
+    .flashcard-area {
+        height: auto;
+        min-height: 150px;
+        aspect-ratio: 4 / 3;
+    }
+
+    .card-face {
+        font-size: 1rem;
+        padding: 10px;
+    }
+
+    .controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .control-btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    .toggle-create, .reset-cards, .tutorial-link {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        width: auto;
+    }
+
+    .card-counter {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 1.6rem;
+    }
+
+    .card-face {
+        font-size: 0.9rem;
+    }
+
+    .control-btn {
+        flex: 1 1 45%;
+        font-size: 0.85rem;
+    }
+}
+
+</style>
 </head>
 <body>
     <div class="main-container">
