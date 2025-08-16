@@ -430,6 +430,21 @@
             font-size: 0.7rem;
         }
 
+        /* Storage indicator */
+        .storage-indicator {
+            position: absolute;
+            bottom: 12px;
+            right: 16px;
+            color: #4a9eff;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .storage-indicator.show {
+            opacity: 1;
+        }
+
         /* Mobile responsive */
         @media (max-width: 768px) {
             body {
@@ -540,6 +555,10 @@
             .credit {
                 display: none;
             }
+
+            .storage-indicator {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -638,6 +657,7 @@
         </div>
         
         <div class="credit">made by aryaan zain</div>
+        <div class="storage-indicator" id="storage-indicator">saved locally ✓</div>
     </div>
 
     <!-- Create Mode Panel -->
@@ -673,6 +693,47 @@
         let currentCardIndex = 0;
         let isFlipped = false;
 
+        // Storage functions
+        function saveToStorage() {
+            try {
+                localStorage.setItem('flashbang-cards', JSON.stringify(flashcards));
+                localStorage.setItem('flashbang-current-index', currentCardIndex.toString());
+                showStorageIndicator();
+            } catch (error) {
+                console.error('Could not save to localStorage:', error);
+            }
+        }
+
+        function loadFromStorage() {
+            try {
+                const savedCards = localStorage.getItem('flashbang-cards');
+                const savedIndex = localStorage.getItem('flashbang-current-index');
+                
+                if (savedCards) {
+                    flashcards = JSON.parse(savedCards);
+                }
+                
+                if (savedIndex && flashcards.length > 0) {
+                    const index = parseInt(savedIndex);
+                    if (index >= 0 && index < flashcards.length) {
+                        currentCardIndex = index;
+                    }
+                }
+            } catch (error) {
+                console.error('Could not load from localStorage:', error);
+                flashcards = [];
+                currentCardIndex = 0;
+            }
+        }
+
+        function showStorageIndicator() {
+            const indicator = document.getElementById('storage-indicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
         function toggleCreateMode() {
             const panel = document.getElementById('create-panel');
             panel.classList.toggle('active');
@@ -698,6 +759,7 @@
             };
 
             flashcards.push(newCard);
+            saveToStorage(); // Save to localStorage
             updateCardList();
             updateStudyMode();
             
@@ -709,6 +771,7 @@
         function deleteCard(cardId) {
             if (confirm('Delete this card?')) {
                 flashcards = flashcards.filter(card => card.id !== cardId);
+                saveToStorage(); // Save to localStorage
                 updateCardList();
                 updateStudyMode();
                 
@@ -786,6 +849,7 @@
             if (flashcards.length === 0) return;
             
             currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            saveToStorage(); // Save current position
             updateStudyMode();
         }
 
@@ -793,6 +857,7 @@
             if (flashcards.length === 0) return;
             
             currentCardIndex = currentCardIndex === 0 ? flashcards.length - 1 : currentCardIndex - 1;
+            saveToStorage(); // Save current position
             updateStudyMode();
         }
 
@@ -804,15 +869,17 @@
                 [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
             }
             currentCardIndex = 0;
+            saveToStorage(); // Save shuffled order
             updateStudyMode();
         }
 
         function resetCards() {
             if (flashcards.length === 0) return;
             
-            if (confirm('Are you sure you want to delete all cards?')) {
+            if (confirm('Are you sure you want to delete all cards? This will permanently remove them from your browser.')) {
                 flashcards = [];
                 currentCardIndex = 0;
+                saveToStorage(); // Clear storage
                 updateStudyMode();
                 updateCardList();
             }
@@ -878,6 +945,7 @@
             }
 
             flashcards = flashcards.concat(newCards);
+            saveToStorage(); // Save after loading file
             updateStudyMode();
             alert(`Loaded ${newCards.length} cards!`);
             
@@ -910,7 +978,8 @@
             }
         });
 
-        // Initialize
+        // Initialize - Load from storage first, then update display
+        loadFromStorage();
         updateStudyMode();
     </script>
 </body>
