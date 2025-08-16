@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> flashcards</title>
+    <title>flashbang cards</title>
     <style>
         * {
             margin: 0;
@@ -13,876 +13,410 @@
 
         body {
             font-family: 'Arial Black', Arial, sans-serif;
-            background: #2a2a2a;
+            background: #0a0a0a;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            color: #fff;
+            line-height: 1.6;
+            padding-top: 80px;
         }
 
-        .main-container {
-            background: #1a1a1a;
-            width: 100%;
-            max-width: 900px;
-            min-height: 500px;
-            border-radius: 0;
-            padding: 0;
-            position: relative;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-        }
-
-        .header {
-            background: #1a1a1a;
-            padding: 30px;
-            text-align: center;
-            border-bottom: 3px solid #6b1a3d;
-        }
-
-        .title {
-            color: white;
-            font-size: 4rem;
-            font-weight: 900;
-            text-transform: lowercase;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
-            border: 4px solid #6b1a3d;
-            padding: 15px 30px;
-            display: inline-block;
-            background: linear-gradient(45deg, #1a1a1a 0%, #2a2a2a 100%);
-        }
-
-        .content {
-            display: flex;
-            height: 400px;
-        }
-
-        .left-panel {
-            width: 40%;
-            background: #1a1a1a;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-right: 2px dashed #444;
-        }
-
-        .right-panel {
-            width: 60%;
-            background: #1a1a1a;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .upload-btn {
-            background: #666;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .upload-btn:hover {
-            background: #777;
-            transform: scale(1.05);
-        }
-
-        .flashcard-area {
-            width: 100%;
-            height: 200px;
-            background: #666;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            perspective: 1000px;
-        }
-
-        .flashcard {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s ease;
-            border-radius: 15px;
-        }
-
-        .flashcard.flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            text-align: center;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .card-front {
-            background: #666;
-        }
-
-        .card-back {
-            background: #555;
-            transform: rotateY(180deg);
-        }
-
-        .controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .control-btn {
-            background: #666;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: lowercase;
-        }
-
-        .control-btn:hover {
-            background: #777;
-            transform: scale(1.05);
-        }
-
-        .card-counter {
-            color: #ccc;
-            font-size: 1rem;
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-weight: bold;
-        }
-
-        .create-panel {
-            display: none;
+        .navbar {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .create-panel.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .create-form {
-            background: #1a1a1a;
-            padding: 40px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 600px;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .create-form h2 {
-            color: white;
-            font-size: 2rem;
-            margin-bottom: 30px;
-            text-align: center;
-            text-transform: lowercase;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            color: #ccc;
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            text-transform: lowercase;
-        }
-
-        .form-group textarea {
-            width: 100%;
-            padding: 15px;
-            background: #333;
-            border: 2px solid #555;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #6b1a3d;
-        }
-
-        .form-group textarea::placeholder {
-            color: #888;
-        }
-
-        .form-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .form-btn {
-            background: #666;
-            color: white;
-            border: none;
+            right: 0;
+            background: #111;
+            border-bottom: 1px solid #222;
             padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: lowercase;
-        }
-
-        .form-btn:hover {
-            background: #777;
-        }
-
-        .form-btn.primary {
-            background: #6b1a3d;
-        }
-
-        .form-btn.primary:hover {
-            background: #7d2048;
-        }
-
-        .card-list {
-            width: 100%;
-            max-height: 200px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-
-        .card-item {
-            background: #333;
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 8px;
+            z-index: 999;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .card-item-text {
-            color: #ccc;
+        .navbar-brand {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: lowercase;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .navbar-link {
+            color: #888;
+            text-decoration: none;
             font-size: 0.9rem;
-            flex: 1;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
-        .delete-btn {
-            background: #dc2626;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .navbar-link:hover {
+            color: #fff;
+            background: #222;
         }
 
-        .delete-btn:hover {
-            background: #ef4444;
+        .navbar-link.active {
+            color: #fff;
+            background: #333;
         }
 
-        .empty-state {
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 0 60px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            text-transform: lowercase;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            font-weight: 400;
+            margin-bottom: 40px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #333;
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: lowercase;
+            transition: all 0.2s ease;
+            border: 1px solid #444;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .cta-button:hover {
+            background: #444;
+            border-color: #555;
+            transform: translateY(-1px);
+        }
+
+        .story-section {
+            padding: 60px 0;
+            background: #111;
+            margin: 60px 0;
+            border-radius: 12px;
+            border: 1px solid #222;
+        }
+
+        .story-content {
+            padding: 0 40px;
+        }
+
+        .story-section h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: lowercase;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            color: #ccc;
+            font-weight: 400;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .methods-section {
+            padding: 60px 0;
+        }
+
+        .methods-section h2 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: lowercase;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .methods-intro {
+            font-size: 1.1rem;
             color: #888;
             text-align: center;
-            padding: 40px;
-            font-size: 1.1rem;
+            margin-bottom: 48px;
+            font-weight: 400;
         }
 
-        .toggle-create {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: #6b1a3d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: lowercase;
-            width: 120px;
-            text-align: center;
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
         }
 
-        .toggle-create:hover {
-            background: #7d2048;
+        .method-card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 24px;
+            transition: all 0.2s ease;
         }
 
-        .reset-cards {
-            position: absolute;
-            top: 65px;
-            left: 20px;
-            background: #6b1a3d;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: lowercase;
-            font-size: 1rem;
-            width: 120px;
-            text-align: center;
+        .method-card:hover {
+            border-color: #333;
+            transform: translateY(-2px);
         }
 
-        .reset-cards:hover {
-            background: #7d2048;
-        }
-
-        .tutorial-link {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #6b1a3d;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            text-transform: lowercase;
-            transition: background 0.3s ease;
-            text-align: center;
-        }
-
-        .tutorial-link:hover {
-            background: #7d2048;
-        }
-
-        .support-link {
-            position: absolute;
-            top: 65px;
-            right: 20px;
-            background: #6b1a3d;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: bold;
-            text-transform: lowercase;
-            transition: background 0.3s ease;
-            text-align: center;
-        }
-
-        .support-link:hover {
-            background: #7d2048;
-        }
-
-        .credit {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
+        .method-number {
+            font-size: 2rem;
+            font-weight: 900;
             color: #666;
-            font-size: 0.7rem;
-            font-weight: normal;
-            text-transform: lowercase;
+            margin-bottom: 8px;
         }
 
+        .method-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            text-transform: lowercase;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .method-description {
+            color: #ccc;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            border-top: 1px solid #222;
+            margin-top: 80px;
+        }
+
+        .footer-text {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        /* Mobile responsive */
         @media (max-width: 768px) {
-            .content {
-                flex-direction: column;
-                height: auto;
+            body {
+                padding-top: 70px;
             }
 
-            .left-panel, .right-panel {
-                width: 100%;
+            .navbar {
+                padding: 8px 16px;
             }
 
-            .left-panel {
-                border-right: none;
-                border-bottom: 2px dashed #444;
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .navbar-nav {
+                gap: 8px;
+            }
+
+            .navbar-link {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 0 16px;
+            }
+
+            .hero {
+                padding: 40px 0 30px;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+                letter-spacing: -1px;
+            }
+
+            .hero .subtitle {
+                font-size: 1rem;
+                margin-bottom: 30px;
+            }
+
+            .cta-button {
+                padding: 14px 28px;
+                font-size: 1rem;
+            }
+
+            .story-section {
+                margin: 40px 0;
+                padding: 40px 0;
+            }
+
+            .story-content {
+                padding: 0 20px;
+            }
+
+            .story-section h2 {
+                font-size: 2rem;
+                margin-bottom: 24px;
+            }
+
+            .story-text {
+                font-size: 1rem;
+            }
+
+            .methods-section {
+                padding: 40px 0;
+            }
+
+            .methods-section h2 {
+                font-size: 2rem;
+            }
+
+            .methods-intro {
+                font-size: 1rem;
+                margin-bottom: 32px;
+            }
+
+            .methods-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin-top: 24px;
+            }
+
+            .method-card {
                 padding: 20px;
             }
 
-            .title {
-                font-size: 2.5rem;
-                padding: 10px 20px;
+            .method-number {
+                font-size: 1.5rem;
             }
 
-            .controls {
-                flex-wrap: wrap;
-                justify-content: center;
+            .method-title {
+                font-size: 1.1rem;
             }
 
-            .control-btn {
-                padding: 10px 20px;
-                font-size: 0.9rem;
+            .footer {
+                padding: 40px 0 30px;
+                margin-top: 60px;
             }
         }
 
-        /* Scrollbar styling */
-        .create-form::-webkit-scrollbar,
-        .card-list::-webkit-scrollbar {
-            width: 8px;
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .story-section h2,
+            .methods-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .method-card {
+                padding: 16px;
+            }
         }
-
-        .create-form::-webkit-scrollbar-track,
-        .card-list::-webkit-scrollbar-track {
-            background: #333;
-            border-radius: 4px;
-        }
-
-        .create-form::-webkit-scrollbar-thumb,
-        .card-list::-webkit-scrollbar-thumb {
-            background: #666;
-            border-radius: 4px;
-        }
-
-        .create-form::-webkit-scrollbar-thumb:hover,
-        .card-list::-webkit-scrollbar-thumb:hover {
-            background: #777;
-        }
-    
-@media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-
-    .main-container {
-        border-radius: 8px;
-        min-height: auto;
-    }
-
-    .title {
-        font-size: 2rem;
-        padding: 8px 16px;
-        letter-spacing: 1px;
-    }
-
-    .content {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .left-panel, .right-panel {
-        width: 100%;
-        padding: 15px;
-    }
-
-    .left-panel {
-        border-right: none;
-        border-bottom: 2px dashed #444;
-    }
-
-    .flashcard-area {
-        height: auto;
-        min-height: 150px;
-        aspect-ratio: 4 / 3;
-    }
-
-    .card-face {
-        font-size: 1rem;
-        padding: 10px;
-    }
-
-    .controls {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .control-btn {
-        padding: 10px 15px;
-        font-size: 0.9rem;
-    }
-
-    .toggle-create, .reset-cards, .tutorial-link {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-        width: auto;
-    }
-
-    .support-link {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-        width: auto;
-    }
-
-    .card-counter {
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .title {
-        font-size: 1.6rem;
-    }
-
-    .card-face {
-        font-size: 0.9rem;
-    }
-
-    .control-btn {
-        flex: 1 1 45%;
-        font-size: 0.85rem;
-    }
-}
-
-</style>
+    </style>
 </head>
 <body>
-    <div class="main-container">
-        <button class="toggle-create" onclick="toggleCreateMode()">create cards</button>
-        <button class="reset-cards" onclick="resetCards()">reset cards</button>
-        <a href="https://imgur.com/a/2vAQyrg" target="_blank" class="tutorial-link">tutorial</a>
-        <a href="https://forms.gle/BYTmwzYx93RwByWc9" target="_blank" class="support-link">support?</a>
-        
-        <div class="header">
-            <div class="title">flashcards</div>
+    <nav class="navbar">
+        <a href="https://flashbang-cards.github.io/index.html" class="navbar-brand">flashbang</a>
+        <div class="navbar-nav">
+            <a href="https://flashbang-cards.github.io/index.html" class="navbar-link active">home</a>
+            <a href="https://flashbang-cards.github.io/flashcards.html" class="navbar-link">flashcards</a>
         </div>
-        
-        <div class="content">
-            <div class="left-panel">
-                <input type="file" id="file-upload" accept=".txt" style="display: none;" onchange="handleFileUpload(event)">
-                <button class="upload-btn" onclick="document.getElementById('file-upload').click()">
-                    upload<br>your.txt
-                </button>
-                <div style="color: #888; font-size: 0.8rem; margin-top: 15px; text-align: center; line-height: 1.3;">
-                    format:<br>
-                    1. question<br>
-                    1. answer<br>
-                    2. question<br>
-                    2. answer...
-                </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <h1>flashbang cards</h1>
+            <p class="subtitle">study smarter, not harder</p>
+            <a href="https://flashbang-cards.github.io/flashcards.html" class="cta-button">flashcards</a>
+            <p style="color: #666; font-size: 0.9rem; margin-top: 16px; font-weight: 400;">more coming soon</p>
+        </section>
+
+        <section class="story-section">
+            <div class="story-content">
+                <h2>hi, i'm aryaan</h2>
+                <p class="story-text">
+                    i created flashbang because i was too lazy to buy flashcards or make them, so i just built this instead. initially, the goals i had with the website were rather simplistic with no genuine end goal. as of now, i've decided to turn this into an educational tool that benefits others.
+                </p>
             </div>
+        </section>
+
+        <section class="methods-section">
+            <h2>effective study methods</h2>
+            <p class="methods-intro">here are some scientific methods to study effectively (which are my favorites)</p>
             
-            <div class="right-panel">
-                <div class="flashcard-area" onclick="flipCard()">
-                    <div class="flashcard" id="flashcard">
-                        <div class="card-face card-front" id="card-front">
-                            <p>Upload cards or create some first</p>
-                        </div>
-                        <div class="card-face card-back" id="card-back">
-                            <p>Then click to flip</p>
-                        </div>
-                    </div>
+            <div class="methods-grid">
+                <div class="method-card">
+                    <div class="method-number">01</div>
+                    <h3 class="method-title">active recall</h3>
+                    <p class="method-description">
+                        testing yourself actively instead of just re-reading. flashcards and practice questions force your brain to retrieve information, strengthening memory pathways.
+                    </p>
                 </div>
-                
-                <div class="controls">
-                    <button class="control-btn" onclick="previousCard()">previous</button>
-                    <button class="control-btn" onclick="nextCard()">next</button>
-                    <button class="control-btn" onclick="shuffleCards()">shuffle</button>
+
+                <div class="method-card">
+                    <div class="method-number">02</div>
+                    <h3 class="method-title">elaborative interrogation</h3>
+                    <p class="method-description">
+                        constantly asking "why" and "how" about everything you learn. understand why things happen, not just that they happen.
+                    </p>
                 </div>
-                
-                <div class="card-counter" id="card-counter">flashcard<br>/#</div>
+
+                <div class="method-card">
+                    <div class="method-number">03</div>
+                    <h3 class="method-title">dual coding</h3>
+                    <p class="method-description">
+                        combine text with visuals, audio, or hands-on activities. your brain has multiple pathways for storing information.
+                    </p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">04</div>
+                    <h3 class="method-title">past papers</h3>
+                    <p class="method-description">
+                        do lots of exam questions and practice tests. mark yourself extremely harshly - be your own worst critic.
+                    </p>
+                </div>
+
+                <div class="method-card">
+                    <div class="method-number">05</div>
+                    <h3 class="method-title">spaced repetition</h3>
+                    <p class="method-description">
+                        review material multiple times over increasing intervals. revisit topics after 1 day, then 3 days, then a week, then a month.
+                    </p>
+                </div>
             </div>
-        </div>
-        
-        <div class="credit">made by aryaan zain</div>
+        </section>
     </div>
 
-    <!-- Create Mode Panel -->
-    <div class="create-panel" id="create-panel">
-        <div class="create-form">
-            <h2>create flashcards</h2>
-            
-            <div class="form-group">
-                <label for="front-text">question / front</label>
-                <textarea id="front-text" placeholder="Enter your question..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="back-text">answer / back</label>
-                <textarea id="back-text" placeholder="Enter your answer..."></textarea>
-            </div>
-            
-            <div class="form-buttons">
-                <button class="form-btn primary" onclick="addCard()">add card</button>
-                <button class="form-btn" onclick="toggleCreateMode()">close</button>
-            </div>
-            
-            <div class="card-list" id="card-list">
-                <div class="empty-state">
-                    no cards created yet
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        let flashcards = [];
-        let currentCardIndex = 0;
-        let isFlipped = false;
-
-        function toggleCreateMode() {
-            const panel = document.getElementById('create-panel');
-            panel.classList.toggle('active');
-            if (panel.classList.contains('active')) {
-                updateCardList();
-            }
-        }
-
-        function addCard() {
-            const frontText = document.getElementById('front-text').value.trim();
-            const backText = document.getElementById('back-text').value.trim();
-
-            if (!frontText || !backText) {
-                alert('Please fill in both sides');
-                return;
-            }
-
-            const newCard = {
-                id: Date.now(),
-                front: frontText,
-                back: backText
-            };
-
-            flashcards.push(newCard);
-            updateCardList();
-            updateStudyMode();
-            
-            // Clear form
-            document.getElementById('front-text').value = '';
-            document.getElementById('back-text').value = '';
-            document.getElementById('front-text').focus();
-        }
-
-        function deleteCard(cardId) {
-            if (confirm('Delete this card?')) {
-                flashcards = flashcards.filter(card => card.id !== cardId);
-                updateCardList();
-                updateStudyMode();
-                
-                if (currentCardIndex >= flashcards.length && flashcards.length > 0) {
-                    currentCardIndex = flashcards.length - 1;
-                }
-            }
-        }
-
-        function updateCardList() {
-            const cardList = document.getElementById('card-list');
-            
-            if (flashcards.length === 0) {
-                cardList.innerHTML = '<div class="empty-state">no cards created yet</div>';
-                return;
-            }
-
-            cardList.innerHTML = flashcards.map(card => `
-                <div class="card-item">
-                    <div class="card-item-text">
-                        <div><strong>Q:</strong> ${card.front.substring(0, 40)}${card.front.length > 40 ? '...' : ''}</div>
-                        <div><strong>A:</strong> ${card.back.substring(0, 40)}${card.back.length > 40 ? '...' : ''}</div>
-                    </div>
-                    <button class="delete-btn" onclick="deleteCard(${card.id})">delete</button>
-                </div>
-            `).join('');
-        }
-
-        function updateStudyMode() {
-            const cardFront = document.getElementById('card-front');
-            const cardBack = document.getElementById('card-back');
-            const cardCounter = document.getElementById('card-counter');
-            const flashcard = document.getElementById('flashcard');
-
-            if (flashcards.length === 0) {
-                cardFront.innerHTML = '<p>Upload cards or create some first</p>';
-                cardBack.innerHTML = '<p>Then click to flip</p>';
-                cardCounter.innerHTML = 'flashcard<br>/#';
-                flashcard.classList.remove('flipped');
-                isFlipped = false;
-                return;
-            }
-
-            if (currentCardIndex >= flashcards.length) {
-                currentCardIndex = 0;
-            }
-
-            const currentCard = flashcards[currentCardIndex];
-            
-            // If card is flipped, flip it back first and wait for animation
-            if (isFlipped) {
-                flashcard.classList.remove('flipped');
-                isFlipped = false;
-                
-                // Wait for the flip animation to complete before updating content
-                setTimeout(() => {
-                    cardFront.innerHTML = `<p>${currentCard.front}</p>`;
-                    cardBack.innerHTML = `<p>${currentCard.back}</p>`;
-                    cardCounter.innerHTML = `flashcard<br>${currentCardIndex + 1}/${flashcards.length}`;
-                }, 300); // Half of the 0.6s transition time
-            } else {
-                // Card is already showing front, update immediately
-                cardFront.innerHTML = `<p>${currentCard.front}</p>`;
-                cardBack.innerHTML = `<p>${currentCard.back}</p>`;
-                cardCounter.innerHTML = `flashcard<br>${currentCardIndex + 1}/${flashcards.length}`;
-            }
-        }
-
-        function flipCard() {
-            if (flashcards.length === 0) return;
-            
-            const flashcard = document.getElementById('flashcard');
-            flashcard.classList.toggle('flipped');
-            isFlipped = !isFlipped;
-        }
-
-        function nextCard() {
-            if (flashcards.length === 0) return;
-            
-            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
-            updateStudyMode();
-        }
-
-        function previousCard() {
-            if (flashcards.length === 0) return;
-            
-            currentCardIndex = currentCardIndex === 0 ? flashcards.length - 1 : currentCardIndex - 1;
-            updateStudyMode();
-        }
-
-        function shuffleCards() {
-            if (flashcards.length === 0) return;
-            
-            for (let i = flashcards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
-            }
-            currentCardIndex = 0;
-            updateStudyMode();
-        }
-
-        function resetCards() {
-            if (flashcards.length === 0) return;
-            
-            if (confirm('Are you sure you want to delete all cards?')) {
-                flashcards = [];
-                currentCardIndex = 0;
-                updateStudyMode();
-                updateCardList();
-            }
-        }
-
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            if (!file.name.toLowerCase().endsWith('.txt')) {
-                alert('Please select a .txt file');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    parseFlashcardFile(e.target.result);
-                } catch (error) {
-                    alert('Error reading file. Please check the format.');
-                    console.error(error);
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function parseFlashcardFile(content) {
-            const lines = content.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-            
-            let newCards = [];
-            let currentQuestion = '';
-            let questionNumber = 1;
-            let expectingAnswer = false;
-
-            for (let line of lines) {
-                const questionMatch = line.match(/^(\d+)\.\s*(.+)/);
-                
-                if (questionMatch) {
-                    const lineNumber = parseInt(questionMatch[1]);
-                    const content = questionMatch[2];
-
-                    if (lineNumber === questionNumber && !expectingAnswer) {
-                        currentQuestion = content;
-                        expectingAnswer = true;
-                    } else if (lineNumber === questionNumber && expectingAnswer) {
-                        if (currentQuestion) {
-                            newCards.push({
-                                id: Date.now() + Math.random(),
-                                front: currentQuestion,
-                                back: content
-                            });
-                        }
-                        questionNumber++;
-                        expectingAnswer = false;
-                        currentQuestion = '';
-                    }
-                }
-            }
-
-            if (newCards.length === 0) {
-                alert('No flashcards found. Check format:\n1. Question\n1. Answer\n2. Question\n2. Answer...');
-                return;
-            }
-
-            flashcards = flashcards.concat(newCards);
-            updateStudyMode();
-            alert(`Loaded ${newCards.length} cards!`);
-            
-            document.getElementById('file-upload').value = '';
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (!document.getElementById('create-panel').classList.contains('active')) {
-                switch(e.key) {
-                    case ' ':
-                    case 'Enter':
-                        e.preventDefault();
-                        flipCard();
-                        break;
-                    case 'ArrowLeft':
-                        e.preventDefault();
-                        previousCard();
-                        break;
-                    case 'ArrowRight':
-                        e.preventDefault();
-                        nextCard();
-                        break;
-                }
-            }
-        });
-
-        // Initialize
-        updateStudyMode();
-    </script>
+    <footer class="footer">
+        <p class="footer-text">made by aryaan zain</p>
+    </footer>
 </body>
 </html>

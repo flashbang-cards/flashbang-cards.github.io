@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>flashcards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            padding-top: 80px;
+        }
+
+        .main-container {
+            background: #111;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 12px;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid #222;
+        }
+
+        .header {
+            padding: 32px 24px 24px;
+            text-align: center;
+            border-bottom: 1px solid #222;
+            position: relative;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 16px;
+            display: flex;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .nav-left {
+            left: 16px;
+        }
+
+        .nav-right {
+            right: 16px;
+        }
+
+        .nav-btn {
+            background: #1a1a1a;
+            color: #888;
+            border: 1px solid #333;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .nav-btn:hover {
+            background: #222;
+            color: #fff;
+            border-color: #444;
+        }
+
+        .title {
+            color: #fff;
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            text-transform: lowercase;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #111;
+            border-bottom: 1px solid #222;
+            padding: 12px 24px;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-transform: lowercase;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .navbar-link {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .navbar-link:hover {
+            color: #fff;
+            background: #222;
+        }
+
+        .navbar-link.active {
+            color: #fff;
+            background: #333;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 400px;
+        }
+
+        .sidebar {
+            background: #0f0f0f;
+            padding: 24px;
+            border-right: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .main-area {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .upload-section {
+            text-align: center;
+        }
+
+        .upload-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: 2px dashed #333;
+            padding: 16px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .upload-btn:hover {
+            border-color: #555;
+            background: #222;
+        }
+
+        .format-info {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+
+        .flashcard-area {
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 3/2;
+            margin-bottom: 24px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+            border-radius: 8px;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            text-align: center;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 400;
+            border: 1px solid #333;
+        }
+
+        .card-front {
+            background: #1a1a1a;
+        }
+
+        .card-back {
+            background: #161616;
+            transform: rotateY(180deg);
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .control-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .control-btn:hover {
+            background: #222;
+            border-color: #444;
+        }
+
+        .card-counter {
+            color: #666;
+            font-size: 0.85rem;
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            font-weight: 400;
+        }
+
+        .create-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .create-panel.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-form {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .create-form h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            color: #ccc;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 0.95rem;
+            min-height: 80px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #555;
+        }
+
+        .form-group textarea::placeholder {
+            color: #666;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .form-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .form-btn:hover {
+            background: #222;
+            border-color: #444;
+        }
+
+        .form-btn.primary {
+            background: #333;
+            border-color: #555;
+        }
+
+        .form-btn.primary:hover {
+            background: #444;
+        }
+
+        .card-list {
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .card-item {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            margin-bottom: 8px;
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-item-text {
+            color: #ccc;
+            font-size: 0.85rem;
+            flex: 1;
+            line-height: 1.3;
+        }
+
+        .delete-btn {
+            background: #2a1a1a;
+            color: #ff6b6b;
+            border: 1px solid #4a2626;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background: #3a2020;
+        }
+
+        .empty-state {
+            color: #666;
+            text-align: center;
+            padding: 24px;
+            font-size: 0.9rem;
+        }
+
+        .credit {
+            position: absolute;
+            bottom: 12px;
+            left: 16px;
+            color: #444;
+            font-size: 0.7rem;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 8px;
+                padding-top: 70px;
+            }
+
+            .navbar {
+                padding: 8px 16px;
+            }
+
+            .navbar-brand {
+                font-size: 1.2rem;
+            }
+
+            .navbar-nav {
+                gap: 8px;
+            }
+
+            .navbar-link {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .main-container {
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 24px 16px 16px;
+            }
+
+            .nav-buttons {
+                top: 8px;
+                font-size: 0.8rem;
+            }
+
+            .nav-left {
+                left: 8px;
+            }
+
+            .nav-right {
+                right: 8px;
+            }
+
+            .nav-btn {
+                padding: 4px 8px;
+            }
+
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .content {
+                grid-template-columns: 1fr;
+                min-height: auto;
+            }
+
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #222;
+                padding: 16px;
+                flex-direction: row;
+                justify-content: center;
+                gap: 12px;
+            }
+
+            .main-area {
+                padding: 16px;
+            }
+
+            .flashcard-area {
+                max-width: 100%;
+                margin-bottom: 16px;
+            }
+
+            .card-face {
+                padding: 16px;
+                font-size: 1rem;
+            }
+
+            .controls {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .control-btn {
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .format-info {
+                display: none;
+            }
+
+            .card-counter {
+                position: static;
+                margin-top: 8px;
+                text-align: center;
+            }
+
+            .create-form {
+                padding: 20px;
+                margin: 8px;
+            }
+
+            .credit {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .controls {
+                gap: 6px;
+            }
+
+            .control-btn {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .nav-btn {
+                padding: 3px 6px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Smooth scrollbar */
+        .create-form::-webkit-scrollbar,
+        .card-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .create-form::-webkit-scrollbar-track,
+        .card-list::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        .create-form::-webkit-scrollbar-thumb,
+        .card-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="https://flashbang-cards.github.io/index.html" class="navbar-brand">flashbang</a>
+        <div class="navbar-nav">
+            <a href="https://flashbang-cards.github.io/index.html" class="navbar-link">home</a>
+            <a href="https://flashbang-cards.github.io/flashcards.html" class="navbar-link active">flashcards</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="header">
+            <div class="nav-buttons nav-left">
+                <button class="nav-btn" onclick="toggleCreateMode()">create</button>
+                <button class="nav-btn" onclick="resetCards()">reset</button>
+            </div>
+            <div class="nav-buttons nav-right">
+                <a href="https://imgur.com/a/2vAQyrg" target="_blank" class="nav-btn">tutorial</a>
+                <a href="https://forms.gle/BYTmwzYx93RwByWc9" target="_blank" class="nav-btn">support?</a>
+            </div>
+            <div class="title">flashcards</div>
+        </div>
+        
+        <div class="content">
+            <div class="sidebar">
+                <div class="upload-section">
+                    <input type="file" id="file-upload" accept=".txt" style="display: none;" onchange="handleFileUpload(event)">
+                    <button class="upload-btn" onclick="document.getElementById('file-upload').click()">
+                        upload .txt file
+                    </button>
+                    <div class="format-info">
+                        format: 1. question<br>1. answer<br>2. question<br>2. answer...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-area">
+                <div class="flashcard-area" onclick="flipCard()">
+                    <div class="flashcard" id="flashcard">
+                        <div class="card-face card-front" id="card-front">
+                            <p>Upload cards or create some first</p>
+                        </div>
+                        <div class="card-face card-back" id="card-back">
+                            <p>Click to flip cards</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="previousCard()">previous</button>
+                    <button class="control-btn" onclick="nextCard()">next</button>
+                    <button class="control-btn" onclick="shuffleCards()">shuffle</button>
+                </div>
+                
+                <div class="card-counter" id="card-counter">0 / 0</div>
+            </div>
+        </div>
+        
+        <div class="credit">made by aryaan zain</div>
+    </div>
+
+    <!-- Create Mode Panel -->
+    <div class="create-panel" id="create-panel">
+        <div class="create-form">
+            <h2>create flashcards</h2>
+            
+            <div class="form-group">
+                <label for="front-text">question</label>
+                <textarea id="front-text" placeholder="Enter your question..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="back-text">answer</label>
+                <textarea id="back-text" placeholder="Enter your answer..."></textarea>
+            </div>
+            
+            <div class="form-buttons">
+                <button class="form-btn primary" onclick="addCard()">add card</button>
+                <button class="form-btn" onclick="toggleCreateMode()">close</button>
+            </div>
+            
+            <div class="card-list" id="card-list">
+                <div class="empty-state">
+                    no cards created yet
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let flashcards = [];
+        let currentCardIndex = 0;
+        let isFlipped = false;
+
+        function toggleCreateMode() {
+            const panel = document.getElementById('create-panel');
+            panel.classList.toggle('active');
+            if (panel.classList.contains('active')) {
+                updateCardList();
+                document.getElementById('front-text').focus();
+            }
+        }
+
+        function addCard() {
+            const frontText = document.getElementById('front-text').value.trim();
+            const backText = document.getElementById('back-text').value.trim();
+
+            if (!frontText || !backText) {
+                alert('Please fill in both sides');
+                return;
+            }
+
+            const newCard = {
+                id: Date.now(),
+                front: frontText,
+                back: backText
+            };
+
+            flashcards.push(newCard);
+            updateCardList();
+            updateStudyMode();
+            
+            document.getElementById('front-text').value = '';
+            document.getElementById('back-text').value = '';
+            document.getElementById('front-text').focus();
+        }
+
+        function deleteCard(cardId) {
+            if (confirm('Delete this card?')) {
+                flashcards = flashcards.filter(card => card.id !== cardId);
+                updateCardList();
+                updateStudyMode();
+                
+                if (currentCardIndex >= flashcards.length && flashcards.length > 0) {
+                    currentCardIndex = flashcards.length - 1;
+                }
+            }
+        }
+
+        function updateCardList() {
+            const cardList = document.getElementById('card-list');
+            
+            if (flashcards.length === 0) {
+                cardList.innerHTML = '<div class="empty-state">no cards created yet</div>';
+                return;
+            }
+
+            cardList.innerHTML = flashcards.map(card => `
+                <div class="card-item">
+                    <div class="card-item-text">
+                        <div><strong>Q:</strong> ${card.front.substring(0, 40)}${card.front.length > 40 ? '...' : ''}</div>
+                        <div><strong>A:</strong> ${card.back.substring(0, 40)}${card.back.length > 40 ? '...' : ''}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteCard(${card.id})">×</button>
+                </div>
+            `).join('');
+        }
+
+        function updateStudyMode() {
+            const cardFront = document.getElementById('card-front');
+            const cardBack = document.getElementById('card-back');
+            const cardCounter = document.getElementById('card-counter');
+            const flashcard = document.getElementById('flashcard');
+
+            if (flashcards.length === 0) {
+                cardFront.innerHTML = '<p>Upload cards or create some first</p>';
+                cardBack.innerHTML = '<p>Click to flip cards</p>';
+                cardCounter.innerHTML = '0 / 0';
+                flashcard.classList.remove('flipped');
+                isFlipped = false;
+                return;
+            }
+
+            if (currentCardIndex >= flashcards.length) {
+                currentCardIndex = 0;
+            }
+
+            const currentCard = flashcards[currentCardIndex];
+            
+            if (isFlipped) {
+                flashcard.classList.remove('flipped');
+                isFlipped = false;
+                
+                setTimeout(() => {
+                    cardFront.innerHTML = `<p>${currentCard.front}</p>`;
+                    cardBack.innerHTML = `<p>${currentCard.back}</p>`;
+                    cardCounter.innerHTML = `${currentCardIndex + 1} / ${flashcards.length}`;
+                }, 250);
+            } else {
+                cardFront.innerHTML = `<p>${currentCard.front}</p>`;
+                cardBack.innerHTML = `<p>${currentCard.back}</p>`;
+                cardCounter.innerHTML = `${currentCardIndex + 1} / ${flashcards.length}`;
+            }
+        }
+
+        function flipCard() {
+            if (flashcards.length === 0) return;
+            
+            const flashcard = document.getElementById('flashcard');
+            flashcard.classList.toggle('flipped');
+            isFlipped = !isFlipped;
+        }
+
+        function nextCard() {
+            if (flashcards.length === 0) return;
+            
+            currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+            updateStudyMode();
+        }
+
+        function previousCard() {
+            if (flashcards.length === 0) return;
+            
+            currentCardIndex = currentCardIndex === 0 ? flashcards.length - 1 : currentCardIndex - 1;
+            updateStudyMode();
+        }
+
+        function shuffleCards() {
+            if (flashcards.length === 0) return;
+            
+            for (let i = flashcards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+            }
+            currentCardIndex = 0;
+            updateStudyMode();
+        }
+
+        function resetCards() {
+            if (flashcards.length === 0) return;
+            
+            if (confirm('Are you sure you want to delete all cards?')) {
+                flashcards = [];
+                currentCardIndex = 0;
+                updateStudyMode();
+                updateCardList();
+            }
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.name.toLowerCase().endsWith('.txt')) {
+                alert('Please select a .txt file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    parseFlashcardFile(e.target.result);
+                } catch (error) {
+                    alert('Error reading file. Please check the format.');
+                    console.error(error);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function parseFlashcardFile(content) {
+            const lines = content.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            
+            let newCards = [];
+            let currentQuestion = '';
+            let questionNumber = 1;
+            let expectingAnswer = false;
+
+            for (let line of lines) {
+                const questionMatch = line.match(/^(\d+)\.\s*(.+)/);
+                
+                if (questionMatch) {
+                    const lineNumber = parseInt(questionMatch[1]);
+                    const content = questionMatch[2];
+
+                    if (lineNumber === questionNumber && !expectingAnswer) {
+                        currentQuestion = content;
+                        expectingAnswer = true;
+                    } else if (lineNumber === questionNumber && expectingAnswer) {
+                        if (currentQuestion) {
+                            newCards.push({
+                                id: Date.now() + Math.random(),
+                                front: currentQuestion,
+                                back: content
+                            });
+                        }
+                        questionNumber++;
+                        expectingAnswer = false;
+                        currentQuestion = '';
+                    }
+                }
+            }
+
+            if (newCards.length === 0) {
+                alert('No flashcards found. Check format:\n1. Question\n1. Answer\n2. Question\n2. Answer...');
+                return;
+            }
+
+            flashcards = flashcards.concat(newCards);
+            updateStudyMode();
+            alert(`Loaded ${newCards.length} cards!`);
+            
+            document.getElementById('file-upload').value = '';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('create-panel').classList.contains('active')) {
+                switch(e.key) {
+                    case ' ':
+                    case 'Enter':
+                        e.preventDefault();
+                        flipCard();
+                        break;
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        previousCard();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        nextCard();
+                        break;
+                    case 'Escape':
+                        if (document.getElementById('create-panel').classList.contains('active')) {
+                            toggleCreateMode();
+                        }
+                        break;
+                }
+            }
+        });
+
+        // Initialize
+        updateStudyMode();
+    </script>
+</body>
+</html>
